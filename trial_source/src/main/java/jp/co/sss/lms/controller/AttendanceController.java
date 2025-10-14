@@ -1,6 +1,8 @@
 package jp.co.sss.lms.controller;
 
+import java.sql.Date;
 import java.text.ParseException;
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,6 +48,13 @@ public class AttendanceController {
 		List<AttendanceManagementDto> attendanceManagementDtoList = studentAttendanceService
 				.getAttendanceManagement(loginUserDto.getCourseId(), loginUserDto.getLmsUserId());
 		model.addAttribute("attendanceManagementDtoList", attendanceManagementDtoList);
+		
+		Date today = Date.valueOf(LocalDate.now());
+		
+		Integer notEnterCount = studentAttendanceService.checkNotEnterCount(loginUserDto.getLmsUserId(), today);
+		boolean showDialogBox = (notEnterCount != null && notEnterCount > 0);
+		model.addAttribute("showDialogBox", showDialogBox);
+		model.addAttribute("showCount", notEnterCount);
 
 		return "attendance/detail";
 	}

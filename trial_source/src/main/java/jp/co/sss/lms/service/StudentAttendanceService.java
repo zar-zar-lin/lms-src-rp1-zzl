@@ -45,6 +45,18 @@ public class StudentAttendanceService {
 	private TStudentAttendanceMapper tStudentAttendanceMapper;
 
 	/**
+	 * 勤怠情報（受講生入力）未入力件数取得
+	 * 
+	 * @param lmsUserId
+	 * @param trainingDate
+	 * @return 勤怠情報（受講生入力）未入力件数
+	 * @param ザザリン - Task.25
+	 */
+	public Integer checkNotEnterCount(Integer lmsUserId, Date trainingDate) {
+		return tStudentAttendanceMapper.notEnterCount(lmsUserId, trainingDate, Constants.DB_FLG_FALSE);
+	}
+	
+	/**
 	 * 勤怠一覧情報取得
 	 * 
 	 * @param courseId
