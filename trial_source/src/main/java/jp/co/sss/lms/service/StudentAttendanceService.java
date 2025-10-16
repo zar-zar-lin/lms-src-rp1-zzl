@@ -1,6 +1,7 @@
 package jp.co.sss.lms.service;
 
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -43,18 +44,6 @@ public class StudentAttendanceService {
 	private LoginUserDto loginUserDto;
 	@Autowired
 	private TStudentAttendanceMapper tStudentAttendanceMapper;
-
-	/**
-	 * 勤怠情報（受講生入力）未入力件数取得
-	 * 
-	 * @param lmsUserId
-	 * @param trainingDate
-	 * @return 勤怠情報（受講生入力）未入力件数
-	 * @param ザザリン - Task.25
-	 */
-	public Integer checkNotEnterCount(Integer lmsUserId, Date trainingDate) {
-		return tStudentAttendanceMapper.notEnterCount(lmsUserId, trainingDate, Constants.DB_FLG_FALSE);
-	}
 	
 	/**
 	 * 勤怠一覧情報取得
@@ -83,6 +72,38 @@ public class StudentAttendanceService {
 		}
 
 		return attendanceManagementDtoList;
+	}
+	
+	/**
+	 * 勤怠情報（受講生入力）未入力件数取得
+	 * 
+	 * @param lmsUserId
+	 * @return 勤怠情報（受講生入力）未入力件数
+	 * @param ザザリン - Task.25
+	 */
+	public boolean hasPastNotEntered(Integer lmsUserId) {
+		Date today = todayAtZero();
+		Integer count = tStudentAttendanceMapper.notEnterCount(
+                lmsUserId, today, Constants.DB_FLG_FALSE);
+		return count != null && count > 0;
+	}
+	
+	/**
+	 * SimpleDateFormatでフォーマットパターンを設定
+	 *
+	 * @return 現在日付
+	 * @param ザザリン - Task.25
+	 */
+	private Date todayAtZero() {		
+		try {
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		sdf.setLenient(false);
+		String todayStr = sdf.format(new Date());
+		
+			return sdf.parse(todayStr);
+		} catch (ParseException e) {
+			return new Date();
+		}
 	}
 
 	/**
