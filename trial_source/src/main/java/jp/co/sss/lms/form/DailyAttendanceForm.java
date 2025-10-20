@@ -46,5 +46,15 @@ public class DailyAttendanceForm {
 	private String courseName;
 	/** インデックス */
 	private String index;
+	
+	// Task.26 - ザザリン
+	/** 出勤時間（時）*/
+	private String trainingStartTimeHour;
+	/** 出勤時間（分）*/
+	private String trainingStartTimeMinute;
+	/** 退勤時間（時） */
+	private String trainingEndTimeHour;
+	/** 退勤時間（分） */
+	private String trainingEndTimeMinute;
 
 }

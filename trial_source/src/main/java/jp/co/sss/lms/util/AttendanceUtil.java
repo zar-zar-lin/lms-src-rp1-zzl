@@ -131,6 +131,73 @@ public class AttendanceUtil {
 		}
 		return map;
 	}
+	
+	/**
+	 * 時間マップ取得
+	 * 
+	 * @return 時間マップ
+	 * @author ザザリン -Task.26
+	 */
+	public LinkedHashMap<String, String> setHourMap(){
+	    LinkedHashMap<String, String> map = new LinkedHashMap<>();
+	    map.put("", "");                 
+	    for (int i = 0; i < 24; i++) {
+	        String s = String.format("%02d", i);
+	        map.put(s, s);
+	    }
+	    return map;
+	}
+	
+	/**
+	 * 分マップ取得
+	 * 
+	 * @return 分マップ
+	 * @author ザザリン -Task.26
+	 */
+	public LinkedHashMap<String, String> setMinuteMap(){
+	    LinkedHashMap<String, String> map = new LinkedHashMap<>();
+	    map.put("", "");                 
+	    for (int i = 0; i < 60; i++) {
+	        String s = String.format("%02d", i);
+	        map.put(s, s);
+	    }
+	    return map;
+	}
+	
+	/**
+	 * 時間を抜き出す
+	 * 
+	 * @return 抜き出す時間
+	 * @author ザザリン -Task.26
+	 */
+	public String extractHour(String dateTimeHour) {
+		if (dateTimeHour == null || dateTimeHour.isEmpty()) {
+			return "";
+		}
+		if (dateTimeHour.matches("^\\d{1,2}:\\d{2}$")) {
+			String hour = dateTimeHour.split(":")[0];
+			return String.format("%02d", Integer.parseInt(hour));
+		}
+		return "";
+	}
+	
+	/**
+	 * 分を抜き出す
+	 * 
+	 * @return 抜き出す分
+	 * @author ザザリン -Task.26
+	 */
+	public String extractMinute(String dateTimeMinute) {
+		if (dateTimeMinute == null || dateTimeMinute.isEmpty()) {
+			return "";
+		}
+		if (dateTimeMinute.matches("^\\d{1,2}:\\d{2}$")) {
+			String minute = dateTimeMinute.split(":")[1];
+			return String.format("%02d", Integer.parseInt(minute));
+		}
+		return "";
+	}
+	
 
 	/**
 	 * 研修日の判定
@@ -145,6 +212,21 @@ public class AttendanceUtil {
 			return true;
 		}
 		return false;
+	}
+	
+	/**
+	 * 出勤／退勤時間をhh:mm形式に設定
+	 * 
+	 * @param trainingHour
+	 * @param trainingMinute
+	 * @return 設定結果
+	 * @param Task26 - ザザリン
+	 */
+	public String toHHmm(String trainingHour, String trainingMinute) {
+	    if ((trainingHour == null || trainingHour.isEmpty()) && (trainingMinute == null || trainingMinute.isEmpty())) {
+	        return null;
+	    }
+	    return String.format("%02d:%02d", Integer.parseInt(trainingHour), Integer.parseInt(trainingMinute));
 	}
 
 }

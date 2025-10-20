@@ -31,4 +31,13 @@ public class StudentAttendanceDto {
 	/** 勤怠状態画面表示名 */
 	private String statusDispName;
 
+	// Task.26 - ザザリン
+	/** 出勤時間（時間） */
+	private String trainingStartHour;
+	/** 出勤時間（分） */
+	private String trainingStartMinute;
+	/** 退勤時間（時間） */
+	private String trainingEndHour;
+	/** 退勤時間（分） */
+	private String trainingEndMinute;
 }

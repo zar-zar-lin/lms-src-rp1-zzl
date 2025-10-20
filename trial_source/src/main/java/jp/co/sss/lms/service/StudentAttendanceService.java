@@ -252,6 +252,9 @@ public class StudentAttendanceService {
 		attendanceForm.setUserName(loginUserDto.getUserName());
 		attendanceForm.setLeaveFlg(loginUserDto.getLeaveFlg());
 		attendanceForm.setBlankTimes(attendanceUtil.setBlankTime());
+		// Task.26 - ザザリン
+		attendanceForm.setHourMap(attendanceUtil.setHourMap());
+		attendanceForm.setMinuteMap(attendanceUtil.setMinuteMap());
 
 		// 途中退校している場合のみ設定
 		if (loginUserDto.getLeaveDate() != null) {
@@ -268,9 +271,23 @@ public class StudentAttendanceService {
 					.setStudentAttendanceId(attendanceManagementDto.getStudentAttendanceId());
 			dailyAttendanceForm
 					.setTrainingDate(dateUtil.toString(attendanceManagementDto.getTrainingDate()));
-			dailyAttendanceForm
-					.setTrainingStartTime(attendanceManagementDto.getTrainingStartTime());
-			dailyAttendanceForm.setTrainingEndTime(attendanceManagementDto.getTrainingEndTime());
+			
+			
+//			dailyAttendanceForm
+//					.setTrainingStartTime(attendanceManagementDto.getTrainingStartTime());
+//			dailyAttendanceForm.setTrainingEndTime(attendanceManagementDto.getTrainingEndTime());
+			
+			String start = attendanceManagementDto.getTrainingStartTime();
+			String end = attendanceManagementDto.getTrainingEndTime();
+			dailyAttendanceForm.setTrainingStartTime(start);
+			dailyAttendanceForm.setTrainingEndTime(end);
+			// Task/26 - ザザリン
+			dailyAttendanceForm.setTrainingStartTimeHour(attendanceUtil.extractHour(start));
+			dailyAttendanceForm.setTrainingStartTimeMinute(attendanceUtil.extractMinute(start));
+			dailyAttendanceForm.setTrainingEndTimeHour(attendanceUtil.extractHour(end));
+			dailyAttendanceForm.setTrainingEndTimeMinute(attendanceUtil.extractMinute(end));
+			
+			
 			if (attendanceManagementDto.getBlankTime() != null) {
 				dailyAttendanceForm.setBlankTime(attendanceManagementDto.getBlankTime());
 				dailyAttendanceForm.setBlankTimeValue(String.valueOf(
@@ -305,15 +322,29 @@ public class StudentAttendanceService {
 		// 現在の勤怠情報（受講生入力）リストを取得
 		List<TStudentAttendance> tStudentAttendanceList = tStudentAttendanceMapper
 				.findByLmsUserId(lmsUserId, Constants.DB_FLG_FALSE);
-
+		
 		// 入力された情報を更新用のエンティティに移し替え
 		Date date = new Date();
 		for (DailyAttendanceForm dailyAttendanceForm : attendanceForm.getAttendanceList()) {
+			
+			// Task.26 - ザザリン
+			// 出勤／退勤時間をhh:mm形式に設定
+			String startHHmm = attendanceUtil.toHHmm(
+					dailyAttendanceForm.getTrainingStartTimeHour(),
+					dailyAttendanceForm.getTrainingStartTimeMinute()
+			    );
+			 String endHHmm = attendanceUtil.toHHmm(
+			    		dailyAttendanceForm.getTrainingEndTimeHour(),
+			    		dailyAttendanceForm.getTrainingEndTimeMinute()
+			    );
+			dailyAttendanceForm.setTrainingStartTime(startHHmm);
+			dailyAttendanceForm.setTrainingEndTime(endHHmm);
 
 			// 更新用エンティティ作成
 			TStudentAttendance tStudentAttendance = new TStudentAttendance();
 			// 日次勤怠フォームから更新用のエンティティにコピー
 			BeanUtils.copyProperties(dailyAttendanceForm, tStudentAttendance);
+			
 			// 研修日付
 			tStudentAttendance
 					.setTrainingDate(dateUtil.parse(dailyAttendanceForm.getTrainingDate()));
