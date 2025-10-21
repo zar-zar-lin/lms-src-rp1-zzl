@@ -272,11 +272,6 @@ public class StudentAttendanceService {
 			dailyAttendanceForm
 					.setTrainingDate(dateUtil.toString(attendanceManagementDto.getTrainingDate()));
 			
-			
-//			dailyAttendanceForm
-//					.setTrainingStartTime(attendanceManagementDto.getTrainingStartTime());
-//			dailyAttendanceForm.setTrainingEndTime(attendanceManagementDto.getTrainingEndTime());
-			
 			String start = attendanceManagementDto.getTrainingStartTime();
 			String end = attendanceManagementDto.getTrainingEndTime();
 			dailyAttendanceForm.setTrainingStartTime(start);
