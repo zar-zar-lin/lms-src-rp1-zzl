@@ -138,12 +138,12 @@ public class AttendanceUtil {
 	 * @return 時間マップ
 	 * @author ザザリン -Task.26
 	 */
-	public LinkedHashMap<String, String> setHourMap(){
+	public LinkedHashMap<String, String> setHourMap() {
 	    LinkedHashMap<String, String> map = new LinkedHashMap<>();
 	    map.put("", "");                 
 	    for (int i = 0; i < 24; i++) {
-	        String s = String.format("%02d", i);
-	        map.put(s, s);
+	        String hour = String.format("%02d", i);
+	        map.put(hour, hour);
 	    }
 	    return map;
 	}
@@ -158,8 +158,8 @@ public class AttendanceUtil {
 	    LinkedHashMap<String, String> map = new LinkedHashMap<>();
 	    map.put("", "");                 
 	    for (int i = 0; i < 60; i++) {
-	        String s = String.format("%02d", i);
-	        map.put(s, s);
+	        String minute = String.format("%02d", i);
+	        map.put(minute, minute);
 	    }
 	    return map;
 	}
