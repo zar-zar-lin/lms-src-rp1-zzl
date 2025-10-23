@@ -84,7 +84,7 @@ public class StudentAttendanceService {
 	public boolean hasPastNotEntered(Integer lmsUserId) {
 		Date today = todayAtZero();
 		Integer count = tStudentAttendanceMapper.notEnterCount(
-                lmsUserId, today, Constants.DB_FLG_FALSE);
+                lmsUserId, Constants.DB_FLG_FALSE, today);
 		return count != null && count > 0;
 	}
 	
