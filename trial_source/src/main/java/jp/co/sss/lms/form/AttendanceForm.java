@@ -32,7 +32,7 @@ public class AttendanceForm {
 	private LinkedHashMap<Integer, String> blankTimes;
 	/** 日次の勤怠フォームリスト */
 	@Valid
-	private List<@Valid DailyAttendanceForm> attendanceList;
+	private List<DailyAttendanceForm> attendanceList;
 	// Task.26 - ザザリン
 	/** 時間マップ(プルダウン) */
 	private LinkedHashMap<String, String> hourMap;
