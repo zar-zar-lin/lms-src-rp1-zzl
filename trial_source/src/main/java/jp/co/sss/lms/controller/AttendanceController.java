@@ -145,14 +145,17 @@ public class AttendanceController {
 	@RequestMapping(path = "/update", params = "complete", method = RequestMethod.POST)
 	public String complete(@Valid @ModelAttribute AttendanceForm attendanceForm, BindingResult result, Model model)
 			throws ParseException {
-		
+		// Task.27 - ザザリン
 		attendanceForm.setHourMap(attendanceUtil.setHourMap());
 	    attendanceForm.setMinuteMap(attendanceUtil.setMinuteMap());
 	    attendanceForm.setBlankTimes(attendanceUtil.setBlankTime());
 	    model.addAttribute("attendanceForm", attendanceForm);
+		
+	    List<String> errorMessages = studentAttendanceService.collectPageErrors(attendanceForm);
+	    if (!errorMessages.isEmpty()) {
+	        model.addAttribute("errorMessages", errorMessages);
 
-	    if (result.hasErrors()) {
-	        // 一覧再取得（既存）
+	        // 再表示に必要な一覧
 	        List<AttendanceManagementDto> list = studentAttendanceService
 	            .getAttendanceManagement(loginUserDto.getCourseId(), loginUserDto.getLmsUserId());
 	        model.addAttribute("attendanceManagementDtoList", list);

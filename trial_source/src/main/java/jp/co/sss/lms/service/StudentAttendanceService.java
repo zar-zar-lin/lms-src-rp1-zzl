@@ -392,5 +392,109 @@ public class StudentAttendanceService {
 		// 完了メッセージ
 		return messageUtil.getMessage(Constants.PROP_KEY_ATTENDANCE_UPDATE_NOTICE);
 	}
+	
+	/**
+	 * 入力チェック処理
+	 * 
+	 * @param form
+	 * @return エラーメッセージ
+	 * @author ザザリン
+	 */	
+	public List<String> collectPageErrors(AttendanceForm form) {
+        List<String> errorsMsg = new ArrayList<>();
+        if (form == null || form.getAttendanceList() == null) return errorsMsg;
 
+        for (int i = 0; i < form.getAttendanceList().size(); i++) {
+            DailyAttendanceForm formRow = form.getAttendanceList().get(i);
+
+            // ａ． 備考 > 100
+            String note = formRow.getNote();
+            if (note != null && note.codePointCount(0, note.length()) > 100) {
+            	errorsMsg.add(messageUtil.getMessage(Constants.VALID_KEY_MAXLENGTH, new String[]{"備考", "100"}));
+            }
+
+            // 片方入力のチェックフラグ
+            boolean hasStartHour = notBlank(formRow.getTrainingStartTimeHour());
+            boolean hasStartMin  = notBlank(formRow.getTrainingStartTimeMinute());
+            boolean hasEndHour   = notBlank(formRow.getTrainingEndTimeHour());
+            boolean hasEndMin    = notBlank(formRow.getTrainingEndTimeMinute());
+
+            boolean totalStartTime = hasStartHour && hasStartMin;
+            boolean totalEndTime   = hasEndHour && hasEndMin;
+
+            // ｂ． 出勤（時/分）どちらか片方だけの場合
+            if (hasStartHour ^ hasStartMin) {
+            	errorsMsg.add(messageUtil.getMessage(Constants.INPUT_INVALID, new String[]{"出勤時間"}));
+            }
+
+            // ｃ． 退勤（時/分）どちらか片方だけの場合
+            if (hasEndHour ^ hasEndMin) {
+            	errorsMsg.add(messageUtil.getMessage(Constants.INPUT_INVALID, new String[]{"退勤時間"}));
+            }
+
+            // ｄ． 退勤あり & 出勤なし の場合
+            if (totalEndTime && !totalStartTime) {
+            	errorsMsg.add(messageUtil.getMessage(Constants.VALID_KEY_ATTENDANCE_PUNCHINEMPTY));
+            }
+
+            // 「出勤・退勤の両方が揃っている」時だけe/fを判定
+            if (totalStartTime && totalEndTime) {
+                try {
+                    String startHHmm = attendanceUtil.toHHmm(
+                    		formRow.getTrainingStartTimeHour(), formRow.getTrainingStartTimeMinute());
+                    String endHHmm = attendanceUtil.toHHmm(
+                    		formRow.getTrainingEndTimeHour(), formRow.getTrainingEndTimeMinute());
+
+                    // 念のため null 設定
+                    if (startHHmm == null || endHHmm == null) {
+                        errorsMsg.add(messageUtil.getMessage(Constants.INPUT_INVALID, new String[]{"時刻"}));
+                        continue;
+                    }
+
+                    int startTimeMinute = toMinutes(startHHmm);
+                    int endTimeMinute   = toMinutes(endHHmm);
+
+                    // e) 出勤 >= 退勤 
+                    if (endTimeMinute <= startTimeMinute) {
+                    	errorsMsg.add(messageUtil.getMessage(
+                    			Constants.VALID_KEY_ATTENDANCE_TRAININGTIMERANGE,
+                                new String[]{ endHHmm, startHHmm } // {0}=退勤, {1}=出勤
+                        ));
+                    }
+
+                    // f) 中抜け > 勤務時間 
+                    Integer blankTime = formRow.getBlankTime(); 
+                    if (blankTime != null && blankTime > (endTimeMinute - startTimeMinute)) {
+                    	errorsMsg.add(messageUtil.getMessage(Constants.VALID_KEY_ATTENDANCE_BLANKTIMEERROR));
+                    }
+
+                } catch (NumberFormatException ex) {
+                	errorsMsg.add(messageUtil.getMessage(Constants.INPUT_INVALID, new String[]{"時刻"}));
+                }
+            }
+        }
+        return errorsMsg.stream().distinct().toList();
+    }
+
+	/**
+	 * 入力チェックフラグ
+	 * 
+	 * @param time
+	 * @return クフラグ結果
+	 * @param Task27 - ザザリン
+	 */
+    private boolean notBlank(String time) { return time != null && !time.isEmpty(); }
+    
+    /**
+	 * 出勤／退勤時間を総分数に変換
+	 * 
+	 * @param hhmm
+	 * @return 総分数
+	 * @param Task27 - ザザリン
+	 */
+    
+    private int toMinutes(String hhmm) {
+        String[] p = hhmm.split(":");
+        return Integer.parseInt(p[0]) * 60 + Integer.parseInt(p[1]);
+    }
 }
