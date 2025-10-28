@@ -22,7 +22,7 @@
 	</th:block>
 	
 	<!--Task.27 - ザザリン-->
-	<div th:if="${errorMessages != null and !#lists.isEmpty(errorMessages)}" class="text-danger" style="margin:8px 0;">
+	<div th:if="${errorMessages != null and !#lists.isEmpty(errorMessages)}" class="text-danger" style="margin:8px 0; font-weight:bold;">
 		<ul style="list-style:none; padding-left:0; margin:0;">
 			<li th:each="msg : ${errorMessages}">
 				* <span th:text="${msg}"></span>

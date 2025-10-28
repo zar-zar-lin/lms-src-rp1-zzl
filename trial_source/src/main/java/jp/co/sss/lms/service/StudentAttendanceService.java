@@ -422,12 +422,12 @@ public class StudentAttendanceService {
             boolean totalStartTime = hasStartHour && hasStartMin;
             boolean totalEndTime   = hasEndHour && hasEndMin;
 
-            // ｂ． 出勤（時/分）どちらか片方だけの場合
+            // ｂ． 出勤（時/分）どちらか片方だけ入力の場合
             if (hasStartHour ^ hasStartMin) {
             	errorsMsg.add(messageUtil.getMessage(Constants.INPUT_INVALID, new String[]{"出勤時間"}));
             }
 
-            // ｃ． 退勤（時/分）どちらか片方だけの場合
+            // ｃ． 退勤（時/分）どちらか片方だけ入力の場合
             if (hasEndHour ^ hasEndMin) {
             	errorsMsg.add(messageUtil.getMessage(Constants.INPUT_INVALID, new String[]{"退勤時間"}));
             }
