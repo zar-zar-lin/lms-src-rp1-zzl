@@ -8,7 +8,6 @@ import lombok.Data;
  * @author 東京ITスクール
  */
 @Data
-//@DailyAttendanceForm.AttendanceRowValid
 public class DailyAttendanceForm {
 
 	/** 受講生勤怠ID */

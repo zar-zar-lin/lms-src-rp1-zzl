@@ -398,7 +398,7 @@ public class StudentAttendanceService {
 	 * 
 	 * @param form
 	 * @return エラーメッセージ
-	 * @author ザザリン
+	 * @author ザザリン - Task.27
 	 */	
 	public List<String> collectPageErrors(AttendanceForm form) {
         List<String> errorsMsg = new ArrayList<>();
@@ -454,15 +454,15 @@ public class StudentAttendanceService {
                     int startTimeMinute = toMinutes(startHHmm);
                     int endTimeMinute   = toMinutes(endHHmm);
 
-                    // e) 出勤 >= 退勤 
+                    // ｅ． 出勤 >= 退勤 
                     if (endTimeMinute <= startTimeMinute) {
                     	errorsMsg.add(messageUtil.getMessage(
                     			Constants.VALID_KEY_ATTENDANCE_TRAININGTIMERANGE,
-                                new String[]{ endHHmm, startHHmm } // {0}=退勤, {1}=出勤
+                                new String[]{ endHHmm, startHHmm } 
                         ));
                     }
 
-                    // f) 中抜け > 勤務時間 
+                    // ｆ． 中抜け > 勤務時間 
                     Integer blankTime = formRow.getBlankTime(); 
                     if (blankTime != null && blankTime > (endTimeMinute - startTimeMinute)) {
                     	errorsMsg.add(messageUtil.getMessage(Constants.VALID_KEY_ATTENDANCE_BLANKTIMEERROR));
@@ -494,7 +494,7 @@ public class StudentAttendanceService {
 	 */
     
     private int toMinutes(String hhmm) {
-        String[] p = hhmm.split(":");
-        return Integer.parseInt(p[0]) * 60 + Integer.parseInt(p[1]);
+        String[] minute = hhmm.split(":");
+        return Integer.parseInt(minute[0]) * 60 + Integer.parseInt(minute[1]);
     }
 }
